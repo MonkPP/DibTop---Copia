@@ -4,8 +4,9 @@ from kivymd.uix.screen import MDScreen
 from kivy.core.window import Window
 from kivymd.app import MDApp
 from kaki.app import App
+from kivymd.uix.toolbar import MDTopAppBar
 import psycopg2
-
+from kivymd.toast import toast
 
 Builder.load_string('''
 
@@ -42,30 +43,11 @@ Builder.load_string('''
 
 <MainScreen>:
     FloatLayout:
-        MDTextField:
-            id: idlogin
-            hint_text:"Login"
-            pos_hint: {'center_x':0.5,'center_y':0.8}
-            size_hint_x: 0.75
-            max_text_length: 25
-        MDTextField:
-            id: idsenha
-            hint_text:"Senha"
-            pos_hint: {'center_x':0.5,'center_y':0.6}
-            size_hint_x: 0.75
-            password: True
         MDTextButton:
-            text: "Esqueci minha senha"
+            text: "TELA PRINCIPAL"
             pos_hint: {'center_x':0.5,'center_y':0.4}
-            font_size: 15
-        MDFillRoundFlatButton:
-            text: "Entrar"
-            pos_hint: {'center_x':0.5,'center_y':0.2}
-            size_hint_x: 0.75
-            text_color: 1,1,1,1
-            md_bg_color: 1,0.53,1,1
-            font_size: 20
-            on_release: root.get_data()
+            font_size: 30
+        
 
 
 ''')
@@ -78,7 +60,6 @@ def conectar():
         user="postgres",
         password="postgres"
     )
-    print(conn)
     return conn
 
 
@@ -89,12 +70,8 @@ def validar_login(login, senha):
         cur.execute("SELECT * FROM funcionario WHERE login = %s AND senha = %s", (login, senha))
         resultado = cur.fetchone()
         if resultado:
-            # login e senha valids
-            print("t")
             return True
         else:
-            print('f')
-            # login e senha invalids
             return False
     except Exception as e:
         print(f"Error ao validar login: {e}")
@@ -102,16 +79,17 @@ def validar_login(login, senha):
 
 
 class LoginScreen(MDScreen):
-    # Window.size = (350, 275)
+    Window.size = (350, 275)
 
     def get_data(self):
         login = self.ids.idlogin.text
         senha = self.ids.idsenha.text
         if validar_login(login, senha):
-            print("Login e senha válidos")
+            toast("Login e senha válidos", duration=2)
             self.manager.current = 'principal'
+            # toast('Bem vindo', duration=3)
         else:
-            print("Login ou senha inválidos")
+            toast("Login ou senha inválidos", duration=10)
 
 
 class MainScreen(MDScreen):
@@ -119,10 +97,10 @@ class MainScreen(MDScreen):
     pass
 
 
-class MainApp(MDApp, App):
+class DibTopApp(MDApp, App):
 
     def build_app(self, **kwargs):
-        Window.maximize()
+        # Window.maximize()
         self.theme_cls.primary_palette = "Green"
 
         sm = ScreenManager()
@@ -135,4 +113,4 @@ class MainApp(MDApp, App):
 
 
 if __name__ == "__main__":
-    MainApp().run()
+    DibTopApp().run()
