@@ -1,16 +1,19 @@
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager
+from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.screen import MDScreen
 from kivy.core.window import Window
 from kivymd.app import MDApp
 from kaki.app import App
+from kivy.uix.floatlayout import FloatLayout
+from kivymd.uix.toolbar import MDToolbar
 from kivymd.uix.toolbar import MDTopAppBar
+from kivymd.uix.toolbar import toolbar
 import psycopg2
 from kivymd.toast import toast
 
 Builder.load_string('''
 
-<LoginScreen>:
+<LoginScreen>
     FloatLayout:
         MDTextField:
             id: idlogin
@@ -41,15 +44,28 @@ Builder.load_string('''
             font_size: 20
             on_release: root.get_data()            
 
-<MainScreen>:
-    FloatLayout:
-        MDTextButton:
-            text: "TELA PRINCIPAL"
-            pos_hint: {'center_x':0.5,'center_y':0.4}
-            font_size: 30
-        
-
-
+<MainScreen>
+    MDBoxLayout:
+        orientation: "vertical"
+    
+        MDTopAppBar:
+            id: toolbar
+            title: "DIBTOP"
+            elevation: 0
+            pos_hint: {'top': 1}
+            size_hint_y: 0.05
+            md_bg_color: 0.18,0.53,1,1
+            
+        MDBottomAppBar:
+            id: bottombar
+            elevation: 0
+            size_hint_y: 0.03
+            pos_hint: {'bottom': 0}
+            md_bg_color: 0.18,0.53,1,1
+    
+        MDLabel:
+            text: "Content"
+            halign: "center"
 ''')
 
 
@@ -79,7 +95,7 @@ def validar_login(login, senha):
 
 
 class LoginScreen(MDScreen):
-    Window.size = (350, 275)
+    # Window.size = (350, 275)
 
     def get_data(self):
         login = self.ids.idlogin.text
@@ -100,7 +116,7 @@ class MainScreen(MDScreen):
 class DibTopApp(MDApp, App):
 
     def build_app(self, **kwargs):
-        # Window.maximize()
+        Window.maximize()
         self.theme_cls.primary_palette = "Green"
 
         sm = ScreenManager()
